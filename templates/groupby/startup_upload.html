@@ -1,0 +1,160 @@
+<form action="/groupby/startup/upload/create/" method="post", enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class = "startup_info">
+        <h2>스타트업 정보</h2>
+        <div>
+            <strong>스타트업 이름</strong>
+            <br>
+            <input type="text" name="startup_name"> <br>
+        </div>
+        <br>
+        <div>
+            <strong>썸네일 이미지</strong>
+            <br>
+            <input type="file" name="thumbnail_image"><br>
+        </div>
+        <br>
+        <div>
+            <strong>한줄 소개</strong>
+            <br>
+            <input type="text" name="short_introduce"> <br>
+        </div>
+        <br>
+        <div>
+            <strong>숏폼 영상 링크</strong>
+            <br>
+            <input type="text" name="short_form_video"> <br>
+        </div>
+        <br>
+        <div>
+            <strong>태그</strong>
+            <br>
+            {% for i in "x"|rjust:"5" %}
+             {{forloop.counter}}
+                <input type="text" name="tag{{ forloop.counter }}">
+            {% endfor %}
+        </div>
+        <br>
+        <div>
+            <strong>기업소개</strong>
+            <br>
+            <textarea name="startup_introduce" rows="5"></textarea><br>
+        </div>
+        <br>
+        <div>
+            <strong>조직문화</strong>
+            <br>
+            <textarea name="startup_culture" rows="5"></textarea><br>
+        </div>
+        <br>
+        <div>
+            <strong>복지 및 혜택</strong>
+            <br>
+            <textarea name="startup_welfare" rows="5"></textarea><br>
+        </div>
+        <br>
+        <div>
+            <strong>채용설명회 링크</strong>
+            <br>
+            <input type="text" name="recruit_conference_video"> <br>
+        </div>
+        <br>
+        <div>
+            <strong>스타트업 이미지</strong>
+            <br>
+            <input type="file" name="image" multiple><br>
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <h2>스타트업 직원 정보</h2>
+    {% for i in "x"|rjust:"3"  %}
+    <div class="employee">
+        <div>
+            <strong>이름</strong>
+            <br>
+            <input type="text" name="name{{ forloop.counter }}"> <br>
+            <br>
+            <strong>직원소개</strong>
+            <br>
+            <textarea name="introduce{{ forloop.counter }}" rows="3"></textarea><br>
+        </div>
+    </div>
+    <br>
+    <br>
+    {% endfor %}
+    
+    <h2>스타트업 구인 페이지</h2>
+    {% for i in "x"|rjust:"3"  %}
+    <div class="recruit">
+        <div>
+            <strong>채용중 여부</strong>
+            <br>
+            <select name="is_recruiting{{ forloop.counter }}">
+                <option value="">채용중 여부 선택</option>
+                <option value="ing">채용중</option>
+                <option value="end">채용마감</option>
+            </select>
+            <br>
+        </div>
+        <br>
+        <div>
+            <strong>채용 마감일</strong>
+            <br>
+            <input type="datetime-local" name="recruit_ending{{ forloop.counter }}"> <br>
+        </div>
+        <br>
+        <div>
+            <strong>채용 포지션 선택</strong>
+            <br>
+            <select name="recruit_position{{ forloop.counter }}">
+                <option value="">채용 포지션 선택</option>
+                <option value="front-end">front-end</option>
+                <option value="back-end">back-end</option>
+                <option value="app">app</option>
+            </select>
+        </div>
+        <br>
+        <div>
+            <strong>테크스택 선택</strong>
+            <br>
+            <select name="techstack{{ forloop.counter }}">
+                <option value="">테크스택 선택</option>
+                <option value="python">python</option>
+                <option value="django">django</option>
+                <option value="react">react</option>
+            </select>
+        </div>
+        <br>
+        <div>
+            <strong>경력</strong>
+            <br>
+            <textarea name="career{{ forloop.counter }}" rows="3"></textarea><br>
+        </div>
+        <br>
+        <div>
+            <strong>주요업무</strong>
+            <br>
+            <textarea name="job_info{{ forloop.counter }}" rows="3"></textarea><br>
+        </div>
+        <br>
+        <div>
+            <strong>자격요건</strong>
+            <br>
+            <textarea name="qualification{{ forloop.counter }}" rows="3"></textarea><br>
+        </div>
+        <br>
+        <div>
+            <strong>우대사항</strong>
+            <br>
+            <textarea name="preference{{ forloop.counter }}" rows="3"></textarea><br>
+        </div>
+    </div>
+    <br>
+    <br>
+    {% endfor %}
+    
+    <input type="submit" value="답변 등록">
+</form>

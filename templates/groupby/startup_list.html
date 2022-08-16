@@ -1,0 +1,21 @@
+{% load static %}
+
+<h3>스타트업 리스트</h3>
+{% if startup_list %}
+    <ul>
+    {% for startup in startup_list %}
+        <li>
+            <img src="/groupby{{ startup.thumbnail_image.url }}" width="50">
+            <a href="{% url 'groupby:detail' startup.id %}">{{ startup.startup_name }}</a>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p> 등록된 스타트업이 없습니다. </p>
+{% endif %}
+<br>
+<form>
+    <a href="{% url 'groupby:startup_upload' %}">
+        <input type="button" value="스타트업 정보 추가하기">
+    </a>
+</form>
