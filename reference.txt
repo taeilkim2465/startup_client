@@ -1,0 +1,13 @@
+[21/Aug/2022 16:57:46] "GET /groupby/startup/upload/ HTTP/1.1" 200 9672
+<QueryDict: {'csrfmiddlewaretoken': ['VxNmvOaJXV0lEBoToezZdFVhtkASZpefkhjDuS56zZug2LdmYE9HNBQVnBpQzPE4'], 
+'startup_name': ['김태일'], 'short_introduce': ['자율주행'], 'short_form_video': ['123'], 
+'tag1': ['자동차'], 'tag2': ['스타트업'], 'tag3': ['자율'], 'tag4': ['주행'], 'tag5': ['차'], 
+'startup_introduce': ['111'], 'startup_culture': ['222'], 'startup_welfare': ['333'], 
+'recruit_conference_video': ['444'], 'name1': ['임진하'], 'introduce1': ['CEO'], 
+'name2': ['김태일'], 'introduce2': ['직원'], 'name3': [''], 'introduce3': [''], 
+'is_recruiting1': ['ing'], 'recruit_ending1': ['2022-08-25T20:00'], 'recruit_position1': ['front-end'], 
+'techstack1': ['react'], 'career1': ['3'], 'job_info1': ['555'], 'qualification1': ['666'], 'preference1': ['777'], 
+'is_recruiting2': [''], 'recruit_ending2': [''], 'recruit_position2': [''], 
+'techstack2': [''], 'career2': [''], 'job_info2': [''], 'qualification2': [''], 'preference2': [''], 
+'is_recruiting3': [''], 'recruit_ending3': [''], 'recruit_position3': [''], 
+'techstack3': [''], 'career3': [''], 'job_info3': [''], 'qualification3': [''], 'preference3': ['']}>

@@ -6,53 +6,52 @@
     <h2>스타트업 정보</h2>
     <strong>썸네일</strong>
     <br>
-    <img src="/groupby{{ startup.thumbnail_image.url }}" width="200">
+    <img src="/groupby{{ startup.thumbnail.url }}" width="200">
     <br>
     <br>
     <strong>한줄소개</strong>
     <br>
-    {{ startup.short_introduce }}
+    {{ startup.briefIntro }}
     <br>
     <br>
     <strong>숏폼 영상 링크</strong>
     <br>
-    {{ startup.short_form_video }}
+    {{ startup.pitch }}
     <br>
     <br>
     <strong>태그</strong>
     <br>
     {% for tag in tag_list %}
-        {% if tag.tag != "" %}
-            #{{ tag.tag }}
-            <br>
-        {% endif %}
+        #{{ tag.name }}
+        <br>
     {% endfor %}
     <br>
     <strong>기업소개</strong>
     <br>
-    {{ startup.startup_introduce }}
+    {% autoescape off %}
+        {{ startup.intro }}
+    {% endautoescape %}
     <br>
     <br>
     <strong>조직문화</strong>
     <br>
-    {{ startup.startup_culture }}
+    {% autoescape off %}
+        {{ startup.culture }}
+    {% endautoescape %}
     <br>
     <br>
     <strong>복지 및 혜택</strong>
     <br>
-    {{ startup.startup_welfare }}
-    <br>
-    <br>
-    <strong>채용설명회 링크</strong>
-    <br>
-    {{ startup.recruit_conference_video }}
+    {% autoescape off %}
+        {{ startup.benefit }}
+    {% endautoescape %}
     <br>
     <br>
     <div>
         <strong>스타트업 이미지</strong>
         <br>
         {% for image in image_list %}
-            <img src="/groupby{{ image.image.url }}" width="200">
+            <img src="/groupby{{ image.url.url }}" width="200">
             <br>
             <br>
         {% endfor %}
@@ -63,21 +62,29 @@
 <br>
 <div>
     <h2>스타트업 직원</h2>
-    {% if employee_list %}
-        {% for employee in employee_list %}
-            {% if employee.name != "" and employ.introduce != "" %}
-                <strong>이름</strong>
-                <br>
-                {{ employee.name }}
-                <br>
-                <br>
-                <strong>직원소개</strong>
-                <br>
-                {{ employee.introduce }}
-                <br>
-                <br>
-                <br>
-            {% endif %}
+    {% if member_list %}
+        {% for member in member_list %}
+            <strong>이름</strong>
+            <br>
+            {{ member.name }}
+            <br>
+            <br>
+            <strong>역할</strong>
+            <br>
+            {{ member.role }}
+            <br>
+            <br>
+            <strong>이력</strong>
+            <br>
+            {{ member.career }}
+            <br>
+            <br>
+            <strong>소개</strong>
+            <br>
+            {{ member.intro }}
+            <br>
+            <br>
+            <br>
         {% endfor %}
     {% endif %}
 </div>
@@ -85,51 +92,51 @@
 <br>
 <div>
     <h2>스타트업 구인 페이지</h2>
-    {% if recruit_list %}
-        {% for recruit in recruit_list %}
-            {% if employee.recruit_position != "" %}
-                <strong>채용중 여부</strong>
-                <br>
-                {{ recruit.is_recruiting }}
-                <br>
-                <br>
-                <strong>채용 마감일</strong>
-                <br>
-                {{ recruit.recruit_ending }}
-                <br>
-                <br>
-                <strong>채용 포지션</strong>
-                <br>
-                {{ recruit.recruit_position }}
-                <br>
-                <br>
-                <strong>테크 스택</strong>
-                <br>
-                {{ recruit.techstack}}
-                <br>
-                <br>
-                <strong>경력</strong>
-                <br>
-                {{ recruit.career }}
-                <br>
-                <br>
-                <strong>주요업무</strong>
-                <br>
-                {{ recruit.job_info }}
-                <br>
-                <br>
-                <strong>자격요건</strong>
-                <br>
-                {{ recruit.qualification }}
-                <br>
-                <br>
-                <strong>우대사항</strong>
-                <br>
-                {{ recruit.preference }}
-                <br>
-                <br>
-                <br>
-            {% endif %}
+    {% if position_list %}
+        {% for position in position_list %}
+            <strong>구인 포지션 이름</strong>
+            <br>
+            {{ position.name }}
+            <br>
+            <br>
+            <strong>채용 마감일</strong>
+            <br>
+            {{ position.dueDate }}
+            <br>
+            <br>
+            <strong>채용 포지션</strong>
+            <br>
+            {{ position.position }}
+            <br>
+            <br>
+            <strong>테크 스택</strong>
+            <br>
+            {% for techstack in position.techStacks.all %}
+            {{ techstack.name }}
+            <br>
+            {% endfor %}
+            <br>
+            <strong>경력</strong>
+            <br>
+            {{ position.careerType }}
+            <br>
+            <br>
+            <strong>주요업무</strong>
+            <br>
+            {{ position.task }}
+            <br>
+            <br>
+            <strong>자격요건</strong>
+            <br>
+            {{ position.qualification }}
+            <br>
+            <br>
+            <strong>우대사항</strong>
+            <br>
+            {{ position.preferred }}
+            <br>
+            <br>
+            <br>
         {% endfor %}
     {% endif %}
 </div>

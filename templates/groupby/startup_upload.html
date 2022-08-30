@@ -1,3 +1,150 @@
+<script type="text/javascript">
+    var oTbl;
+    var counterTag = 0;
+    var counterMember = 0;
+    var counterPosition = 0;
+    function insTag() {
+      ++counterTag;
+      oTbl = document.getElementById("addTag");
+      var oRow = oTbl.insertRow();
+      oRow.onmouseover=function(){oTbl.clickedRowIndex=this.rowIndex}; //clickedRowIndex - 클릭한 Row의 위치를 확인;
+      var oCell = oRow.insertCell();
+    
+      //삽입될 Form Tag
+      var frmTag = "<input type=text name=tag_name" + counterTag + " style='width:350px; height:20px; margin-bottom:10px;'> ";
+      frmTag += "<input type=button value='삭제' onClick='removeRow()' style='cursor:hand'>";
+      oCell.innerHTML = frmTag;
+    }
+
+    function insMember() {
+      ++counterMember;
+      oTbl = document.getElementById("addMember");
+      var oRow = oTbl.insertRow();
+      oRow.onmouseover=function(){oTbl.clickedRowIndex=this.rowIndex}; //clickedRowIndex - 클릭한 Row의 위치를 확인;
+      var oCell = oRow.insertCell();
+    
+      //삽입될 Form Tag
+      var frmMember = '\
+            <div>\
+                <strong>이름</strong>\
+                <br>\
+                <input type="text" name="member_name'+ counterMember +'"> <br>\
+                <br>\
+                <strong>역할</strong>\
+                <br>\
+                <input type="text" name="member_role'+ counterMember +'"> <br>\
+                <br>\
+                <strong>이력</strong>\
+                <br>\
+                <input type="text" name="member_career'+ counterMember +'"> <br>\
+                <br>\
+                <strong>소개</strong>\
+                <br>\
+                <textarea name="member_intro'+ counterMember +'" style="width:300px;" rows="3"></textarea><br>\
+            </div>\
+        ';
+      frmMember += "<input type=button value='삭제' onClick='removeRow()' style='cursor:hand'> <br> <br> <br>";
+      oCell.innerHTML = frmMember;
+    }
+
+    function insPosition() {
+      ++counterPosition;
+      oTbl = document.getElementById("addPosition");
+      var oRow = oTbl.insertRow();
+      oRow.onmouseover=function(){oTbl.clickedRowIndex=this.rowIndex}; //clickedRowIndex - 클릭한 Row의 위치를 확인;
+      var oCell = oRow.insertCell();
+    
+      //삽입될 Form Tag
+      var frmPosition = '\
+        <div>\
+            <strong>구인 포지션 이름</strong>\
+            <br>\
+            <input type="text" name="position_name'+ counterPosition +'"> <br>\
+        </div>\
+        <br>\
+        <div>\
+            <strong>채용 마감일</strong>\
+            <br>\
+            <input type="datetime-local" name="position_due_date'+ counterPosition +'"> <br>\
+        </div>\
+        <br>\
+        <div>\
+            <strong>채용 포지션 선택</strong>\
+            <br>\
+            <select name="position_position'+ counterPosition +'">\
+                {% for position_name in position_name_list %}\
+                    <option value="{{ position_name.id }}">{{ position_name.name }}</option>\
+                {% endfor %}\
+            </select>\
+        </div>\
+        <br>\
+        <div>\
+            <strong>테크스택 선택</strong>\
+            <br>\
+            <select name="position_techstacks'+ counterPosition +'" style="height:300px;" multiple>\
+                {% for techstack in techstack_list %}\
+                    <option value="{{techstack.id}}">"{{techstack.name}}"</option>\
+                {% endfor %}\
+            </select>\
+        </div>\
+        <br>\
+        <div>\
+            <strong>경력</strong>\
+            <br>\
+            <select name="position_career_type'+ counterPosition +'">\
+                {% for career_type in career_type_list %}\
+                    <option value="{{ career_type.id }}">{{ career_type.name }}</option>\
+                {% endfor %}\
+            </select>\
+        </div>\
+        <br>\
+        <div>\
+            <strong>주요업무</strong>\
+            <br>\
+            <textarea name="position_task'+ counterPosition +'" style="width:300px;" style="width:300px;" rows="3"></textarea><br>\
+        </div>\
+        <br>\
+        <div>\
+            <strong>자격요건</strong>\
+            <br>\
+            <textarea name="position_qualification'+ counterPosition +'" style="width:300px;" rows="3"></textarea><br>\
+        </div>\
+        <br>\
+        <div>\
+            <strong>우대사항</strong>\
+            <br>\
+            <textarea name="position_preferred'+ counterPosition +'" style="width:300px;" rows="3"></textarea><br>\
+        </div>\
+      ';
+      frmPosition += "<input type=button value='삭제' onClick='removeRow()' style='cursor:hand'> <br> <br> <br>";
+      oCell.innerHTML = frmPosition;
+    }
+
+    //Row 삭제
+    function removeRow() {
+      oTbl.deleteRow(oTbl.clickedRowIndex);
+    }
+    
+    function frmCheckTag()
+    {
+      var frm = document.form;
+      
+      for( var i = 0; i <= frm.elements.length - 1; i++ ){
+         if( frm.elements[i].name == "tag"+str(i+1) )
+         {
+             if( !frm.elements[i].value ){
+                 alert("텍스트박스에 값을 입력하세요!");
+                     frm.elements[i].focus();
+         return;
+              }
+          }
+       }
+     }
+
+
+
+</script>
+
 <form action="/groupby/startup/upload/create/" method="post", enctype="multipart/form-data">
     {% csrf_token %}
     <div class = "startup_info">
@@ -5,156 +152,88 @@
         <div>
             <strong>스타트업 이름</strong>
             <br>
-            <input type="text" name="startup_name"> <br>
+            <input type="text" name="name"> <br>
         </div>
         <br>
         <div>
             <strong>썸네일 이미지</strong>
             <br>
-            <input type="file" name="thumbnail_image"><br>
+            <input type="file" name="thumbnail"><br>
         </div>
         <br>
         <div>
             <strong>한줄 소개</strong>
             <br>
-            <input type="text" name="short_introduce"> <br>
+            <input type="text" name="brief_intro"> <br>
         </div>
         <br>
         <div>
             <strong>숏폼 영상 링크</strong>
             <br>
-            <input type="text" name="short_form_video"> <br>
+            <input type="text" name="pitch"> <br>
         </div>
         <br>
         <div>
             <strong>태그</strong>
             <br>
-            {% for i in "x"|rjust:"5" %}
-             {{forloop.counter}}
-                <input type="text" name="tag{{ forloop.counter }}">
-            {% endfor %}
+            <input name="addButton" type="button" style="cursor:hand; margin-bottom:10px;" onClick="insTag()" value="추가">
+            <font color="#FF0000">*</font>추가버튼을 클릭해 보세요.
+            <table id="addTag" width="400" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" border="0">
+            </table>
         </div>
         <br>
         <div>
             <strong>기업소개</strong>
             <br>
-            <textarea name="startup_introduce" rows="5"></textarea><br>
+            <textarea name="intro" style="width:300px;" rows="5"></textarea><br>
         </div>
         <br>
         <div>
             <strong>조직문화</strong>
             <br>
-            <textarea name="startup_culture" rows="5"></textarea><br>
+            <textarea name="culture" style="width:300px;" rows="5"></textarea><br>
         </div>
         <br>
         <div>
             <strong>복지 및 혜택</strong>
             <br>
-            <textarea name="startup_welfare" rows="5"></textarea><br>
+            <textarea name="benefit" style="width:300px;" rows="5"></textarea><br>
         </div>
         <br>
         <div>
             <strong>채용설명회 링크</strong>
             <br>
-            <input type="text" name="recruit_conference_video"> <br>
+            <input type="text" name="pt_url"> <br>
         </div>
         <br>
         <div>
-            <strong>스타트업 이미지</strong>
+            <strong>스타트업 이미지</strong> (다중 선택)
             <br>
-            <input type="file" name="image" multiple><br>
+            <input type="file" name="image_url" multiple><br>
         </div>
     </div>
-    <br>
     <br>
     <br>
     <br>
     <h2>스타트업 직원 정보</h2>
-    {% for i in "x"|rjust:"3"  %}
     <div class="employee">
-        <div>
-            <strong>이름</strong>
-            <br>
-            <input type="text" name="name{{ forloop.counter }}"> <br>
-            <br>
-            <strong>직원소개</strong>
-            <br>
-            <textarea name="introduce{{ forloop.counter }}" rows="3"></textarea><br>
-        </div>
+        <input name="addButton" type="button" style="cursor:hand; margin-bottom:10px;" onClick="insMember()" value="추가">
+        <font color="#FF0000">*</font>추가버튼을 클릭해 보세요.
+        <table id="addMember" width="400" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" border="0">
+        </table>
     </div>
     <br>
     <br>
-    {% endfor %}
     
     <h2>스타트업 구인 페이지</h2>
-    {% for i in "x"|rjust:"3"  %}
-    <div class="recruit">
-        <div>
-            <strong>채용중 여부</strong>
-            <br>
-            <select name="is_recruiting{{ forloop.counter }}">
-                <option value="">채용중 여부 선택</option>
-                <option value="ing">채용중</option>
-                <option value="end">채용마감</option>
-            </select>
-            <br>
-        </div>
-        <br>
-        <div>
-            <strong>채용 마감일</strong>
-            <br>
-            <input type="datetime-local" name="recruit_ending{{ forloop.counter }}"> <br>
-        </div>
-        <br>
-        <div>
-            <strong>채용 포지션 선택</strong>
-            <br>
-            <select name="recruit_position{{ forloop.counter }}">
-                <option value="">채용 포지션 선택</option>
-                <option value="front-end">front-end</option>
-                <option value="back-end">back-end</option>
-                <option value="app">app</option>
-            </select>
-        </div>
-        <br>
-        <div>
-            <strong>테크스택 선택</strong>
-            <br>
-            <select name="techstack{{ forloop.counter }}">
-                <option value="">테크스택 선택</option>
-                <option value="python">python</option>
-                <option value="django">django</option>
-                <option value="react">react</option>
-            </select>
-        </div>
-        <br>
-        <div>
-            <strong>경력</strong>
-            <br>
-            <textarea name="career{{ forloop.counter }}" rows="3"></textarea><br>
-        </div>
-        <br>
-        <div>
-            <strong>주요업무</strong>
-            <br>
-            <textarea name="job_info{{ forloop.counter }}" rows="3"></textarea><br>
-        </div>
-        <br>
-        <div>
-            <strong>자격요건</strong>
-            <br>
-            <textarea name="qualification{{ forloop.counter }}" rows="3"></textarea><br>
-        </div>
-        <br>
-        <div>
-            <strong>우대사항</strong>
-            <br>
-            <textarea name="preference{{ forloop.counter }}" rows="3"></textarea><br>
-        </div>
+    <div class="Recruit">
+        <input name="addButton" type="button" style="cursor:hand; margin-bottom:10px;" onClick="insPosition()" value="추가">
+        <font color="#FF0000">*</font>추가버튼을 클릭해 보세요.
+        <table id="addPosition" width="400" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" border="0">
+        </table>
     </div>
     <br>
     <br>
-    {% endfor %}
-    
-    <input type="submit" value="답변 등록">
+    <br>
+    <input type="submit" value="답변 등록" onClick="frmCheck();">
 </form>

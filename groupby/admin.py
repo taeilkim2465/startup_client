@@ -1,24 +1,38 @@
 from django.contrib import admin
-from .models import Post, Recruit, Image, Tag, Employee
+from .models import Position, CareerType, TechStack, Startup, StartupPosition, StartupImage, StartupTag, StartupMember 
 
 # Register your models here.
-class PostAdmin(admin.ModelAdmin):
-    search_fields = ['startup_name']
+class StartupAdmin(admin.ModelAdmin):
+    search_fields = ['name']
 
-class ImageAdmin(admin.ModelAdmin):
-    search_fields = ['post_id']
+class StartupPositionAdmin(admin.ModelAdmin):
+    search_fields = ['name']
 
-class RecruitAdmin(admin.ModelAdmin):
-    search_fields = ['post_id']
+class StartupImageAdmin(admin.ModelAdmin):
+    search_fields = ['startup']
 
-class TagAdmin(admin.ModelAdmin):
-    search_fields = ['post_id']
+class StartupTagAdmin(admin.ModelAdmin):
+    search_fields = ['name']
 
-class EmployeeAdmin(admin.ModelAdmin):
-    search_fields = ['post_id']
+class StartupMemberAdmin(admin.ModelAdmin):
+    search_fields = ['name']
 
-admin.site.register(Post, PostAdmin)
-admin.site.register(Image, ImageAdmin)
-admin.site.register(Recruit, RecruitAdmin)
-admin.site.register(Tag, TagAdmin)
-admin.site.register(Employee, EmployeeAdmin)
+class PositionAdmin(admin.ModelAdmin):
+    search_fields = ['name']
+
+class CareerTypeAdmin(admin.ModelAdmin):
+    search_fields = ['name']
+
+class TechStackAdmin(admin.ModelAdmin):
+    search_fields = ['name']
+
+
+admin.site.register(Startup, StartupAdmin)
+admin.site.register(StartupPosition, StartupPositionAdmin)
+admin.site.register(StartupImage, StartupImageAdmin)
+admin.site.register(StartupMember, StartupMemberAdmin)
+admin.site.register(StartupTag, StartupTagAdmin)
+admin.site.register(Position, PositionAdmin)
+admin.site.register(CareerType, CareerTypeAdmin)
+admin.site.register(TechStack, TechStackAdmin)
+

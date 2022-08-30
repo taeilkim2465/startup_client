@@ -1,201 +1,259 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Post, Recruit, Image, Tag, Employee 
-from .models import Image
+from .models import CareerType, Position, Startup, StartupPosition, StartupImage, StartupTag, StartupMember, TechStack 
 from django.utils import timezone
 from django.http import Http404
 
 def index(request):
-    startup_list = Post.objects.order_by('-create_date')
+    startup_list = Startup.objects.order_by('id')
     context = {'startup_list': startup_list}
     return render(request, 'groupby/startup_list.html', context)
 
 def detail(request, startup_id):
-    startup = get_object_or_404(Post, pk=startup_id)
-    recruit_list = Recruit.objects.filter(post_id=startup_id)
-    image_list = Image.objects.filter(post_id=startup_id)
-    tag_list = Tag.objects.filter(post_id=startup_id)
-    employee_list = Employee.objects.filter(post_id=startup_id)
-    context = {'startup': startup, "recruit_list":recruit_list, "image_list":image_list, "tag_list":tag_list, "employee_list":employee_list}
+    startup = get_object_or_404(Startup, pk=startup_id)
+    position_list = StartupPosition.objects.filter(startup=startup_id)
+    image_list = StartupImage.objects.filter(startup=startup_id)
+    tag_list = StartupTag.objects.filter(startup=startup_id)
+    member_list = StartupMember.objects.filter(startup=startup_id)
+    techstack_list = []
+    for position in position_list:
+        techstack = position.techStacks.all()
+        techstack_list.append(techstack)
+    context = {'startup': startup, "position_list":position_list, "image_list":image_list, "tag_list":tag_list, \
+        "member_list":member_list, "techstack_list":techstack_list}
     return render(request, 'groupby/startup_detail.html', context)
 
 def startup_upload(request):
-    return render(request, 'groupby/startup_upload.html')
+    position_name_list = Position.objects.all()
+    career_type_list = CareerType.objects.all()
+    techstack_list = TechStack.objects.all()
+    context = {'position_name_list': position_name_list, 'career_type_list': career_type_list, \
+        'techstack_list': techstack_list}
+    return render(request, 'groupby/startup_upload.html', context)
+
+def html_tag_processor(str):
+    str_list = str.split("\n")
+    if len(str_list) == 1:
+        return str_list
+    for i, s in enumerate(str_list):
+            if s[0:2] == "- ":
+                s = s.replace(s[0:2], "<li>")
+                s = s+"</li>"
+                str_list[i] = s
+            else:
+                s+"<br>"
+                str_list[i] = s
+    
+
+    return "".join(str_list)
 
 def startup_upload_create(request):
     print(request.POST)
-    post_form = Post()
-    post_form.startup_name = request.POST['startup_name']
-    post_form.thumbnail_image = request.FILES['thumbnail_image']
-    post_form.short_introduce = request.POST['short_introduce']
-    post_form.short_form_video = request.POST['short_form_video']
-    post_form.startup_introduce = request.POST['startup_introduce']
-    post_form.startup_culture = request.POST['startup_culture']
-    post_form.startup_welfare = request.POST['startup_welfare']
-    post_form.recruit_conference_video = request.POST['recruit_conference_video']
-    post_form.create_date = timezone.localtime()
-    post_form.save()
+    startup_form = Startup()
+    startup_form.name = request.POST['name']
+    startup_form.thumbnail = request.FILES['thumbnail']
+    startup_form.briefIntro = request.POST['brief_intro']
+    startup_form.pitch = request.POST['pitch']
+    startup_form.intro = html_tag_processor(request.POST['intro'])
+    startup_form.culture = html_tag_processor(request.POST['culture'])
+    startup_form.benefit = html_tag_processor(request.POST['benefit'])
+    startup_form.save()
 
-    for i in range(1,6):
-        tag_form = Tag(post_id=post_form)
-        try:
-            tag_form.tag = request.POST['tag'+str(i)]
-        except:
-            continue
+
+    tag_list = []
+    for key in request.POST.keys():
+        print(key)
+        if "tag_name" in key:
+            tag_list.append(key)
+    for i in range(len(tag_list)):
+        tag_form  = StartupTag(startup=startup_form, name=request.POST[tag_list[i]])
         tag_form.save()
-   
+
+    
+    pt_list = []
+    for key in request.POST.keys():
+        print(key)
+        if "pt_url" in key:
+            pt_list.append(key)
+    for i in range(len(pt_list)):
+        pt_form  = StartupTag(startup=startup_form, name=request.POST[pt_list[i]])
+        pt_form.save()
+
+
     try:
-        images = request.FILES.getlist('image')
+        images = request.FILES.getlist('image_url')
     except:
         pass
     for image in images:
-        #id 로 저장하는 방법 찾기
-        image_form=Image(post_id=post_form, image=image)
+        image_form=StartupImage(startup=startup_form, url=image)
         image_form.save()
 
-    for i in range(1,4):
-        employee_form = Employee(post_id=post_form)
-        try:
-            employee_form.name = request.POST['name'+str(i)]
-            employee_form.introduce = request.POST['introduce'+str(i)]
-        except:
-            continue
-        employee_form.save()
 
-    for i in range(1,4):
-        recruit_form = Recruit(post_id=post_form)
-        try:
-            recruit_form.is_recruiting = request.POST['is_recruiting'+str(i)]
-            if recruit_form.is_recruiting == "":
-                continue
-        except:
-            print("problem1")
-        try:
-            recruit_form.recruit_ending = request.POST['recruit_ending'+str(i)]
-        except:
-            print("problem2")
-        try:
-            recruit_form.recruit_position = request.POST['recruit_position'+str(i)]
-        except:
-            print("problem3")
-        try:
-            recruit_form.techstack = request.POST['techstack'+str(i)]
-        except:
-            print("problem4")
-        try:
-            recruit_form.career = request.POST['career'+str(i)]
-        except:
-            print("problem5")
-        try:
-            recruit_form.job_info = request.POST['job_info'+str(i)]
-        except:
-            print("problem6")
-        try:
-            recruit_form.qualification = request.POST['qualification'+str(i)]
-        except:
-            print("problem7")
-        try:
-            recruit_form.preference = request.POST['preference'+str(i)]
-        except:
-            print("problem8")
-        recruit_form.save()
-    
+    member_name_list = []
+    member_role_list = []
+    member_career_list = []
+    member_intro_list = []
+    for key in request.POST.keys():
+        if "member_name" in key:
+            member_name_list.append(key)
+        elif "member_role" in key:
+            member_role_list.append(key)
+        elif "member_career" in key:
+            member_career_list.append(key)
+        elif "member_intro" in key:
+            member_intro_list.append(key)
+
+    for i in range(len(member_name_list)):
+        member_form = StartupMember(startup=startup_form, name=request.POST[member_name_list[i]], role=request.POST[member_role_list[i]], career=request.POST[member_career_list[i]], intro=request.POST[member_intro_list[i]])
+        member_form.save()
+
+
+    position_name_list = []
+    position_qualification_list = []
+    position_preferred_list = []
+    position_due_date_list = []
+    position_task_list = []
+    position_position_list = []
+    position_career_type_list = []
+    position_techstacks_list = []
+    for key in request.POST.keys():
+        if "position_name" in key:
+            position_name_list.append(request.POST[key])
+        elif "position_qualification" in key:
+            position_qualification_list.append(request.POST[key])
+        elif "position_preferred" in key:
+            position_preferred_list.append(request.POST[key])
+        elif "position_due_date" in key:
+            position_due_date_list.append(request.POST[key])
+        elif "position_task" in key:
+            position_task_list.append(request.POST[key])
+        elif "position_position" in key:
+            position_position_list.append(request.POST[key])
+        elif "position_career_type" in key:
+            position_career_type_list.append(request.POST[key])
+        elif "position_techstacks" in key:
+            position_techstacks_list.append(request.POST.getlist(key))
+
+    for i in range(len(position_name_list)):
+        position_form  = StartupPosition(startup=startup_form, name=position_name_list[i], \
+            qualification=position_qualification_list[i], preferred=position_preferred_list[i],\
+            dueDate=position_due_date_list[i], task=position_task_list[i], \
+            position=Position.objects.get(id=position_position_list[i]),\
+            careerType=CareerType.objects.get(id=position_career_type_list[i]))
+        
+        position_form.save()
+        print("position_techstacks_list[i]:", position_techstacks_list[i])
+        ts_list = position_techstacks_list[i]
+        print("ts_list:", ts_list)
+        for j in range(len(ts_list)):
+            ts=TechStack.objects.get(id=ts_list[j])
+            print("ts:", ts)
+            print("type(ts):", type(ts))
+            position_form.techStacks.add(ts.id)    
+        print(position_form.techStacks.all())
     return redirect('/groupby')  
 
 
     
-    # Post(startup_name=request.POST.get('startup_name'), content=request.POST.get('content'), create_date=timezone.now())
+    # Startup(name=request.POST.get('name'), content=request.POST.get('content'), create_date=timezone.now())
     # return redirect('groupby:index')
 
 def startup_upload_update(request, startup_id):
-    startup = get_object_or_404(Post, pk=startup_id)
-    recruit_list = Recruit.objects.filter(post_id=startup_id)
-    image_list = Image.objects.filter(post_id=startup_id)
-    tag_list = Tag.objects.filter(post_id=startup_id)
-    employee_list = Employee.objects.filter(post_id=startup_id)
-    context = {'startup': startup, "recruit_list":recruit_list, "image_list":image_list, "tag_list":tag_list, "employee_list":employee_list}
+    startup = get_object_or_404(Startup, pk=startup_id)
+    position_list = StartupPosition.objects.filter(startup=startup_id)
+    image_list = StartupImage.objects.filter(startup=startup_id)
+    tag_list = StartupTag.objects.filter(startup=startup_id)
+    member_list = StartupMember.objects.filter(startup=startup_id)
+    position_name_list = Position.objects.all()
+    career_type_list = CareerType.objects.all()
+    techstack_list = TechStack.objects.all()
+    context = {'startup': startup, "position_list":position_list, "image_list":image_list, "tag_list":tag_list, "member_list":member_list,\
+        'position_name_list': position_name_list, 'career_type_list': career_type_list, 'techstack_list': techstack_list}
     return render(request, 'groupby/startup_update.html', context)
 
 def startup_upload_update_create(request, startup_id):
-    post_form=get_object_or_404(Post, pk=startup_id)
-    post_form.startup_name = request.POST['startup_name']
-    post_form.thumbnail_image = request.FILES['thumbnail_image']
-    post_form.short_introduce = request.POST['short_introduce']
-    post_form.short_form_video = request.POST['short_form_video']
-    post_form.startup_introduce = request.POST['startup_introduce']
-    post_form.startup_culture = request.POST['startup_culture']
-    post_form.startup_welfare = request.POST['startup_welfare']
-    post_form.recruit_conference_video = request.POST['recruit_conference_video']
-    post_form.create_date = timezone.localtime()
-    post_form.save()
+    print(request)
+    startup_form=get_object_or_404(Startup, pk=startup_id)
+    startup_form.name = request.POST['name']
+    startup_form.thumbnail = request.FILES['thumbnail']
+    startup_form.briefIntro = request.POST['briefIntro']
+    startup_form.pitch = request.POST['pitch']
+    startup_form.intro = request.POST['intro']
+    startup_form.culture = request.POST['culture']
+    startup_form.benefit = request.POST['benefit']
+    startup_form.save()
 
+    StartupTag.objects.filter(startup=startup_form).delete()
     for i in range(1,6):
-        tag_form = Tag(post_id=post_form)
+        tag_form = StartupTag(startup=startup_form)
         try:
             tag_form.tag = request.POST['tag'+str(i)]
         except:
             continue
         tag_form.save()
-   
+    
+    StartupImage.objects.filter(startup=startup_form).delete()
     try:
         images = request.FILES.getlist('image')
     except:
         pass
     for image in images:
         #id 로 저장하는 방법 찾기
-        image_form=Image(post_id=post_form, image=image)
+        image_form=StartupImage(startup=startup_form, image=image)
         image_form.save()
 
+    StartupMember.objects.filter(startup=startup_form).delete()
     for i in range(1,4):
-        employee_form = Employee(post_id=post_form)
+        member_form = StartupMember(startup=startup_form)
         try:
-            employee_form.name = request.POST['name'+str(i)]
-            employee_form.introduce = request.POST['introduce'+str(i)]
+            member_form.name = request.POST['name'+str(i)]
+            member_form.introduce = request.POST['introduce'+str(i)]
         except:
             continue
-        employee_form.save()
+        member_form.save()
 
+    StartupPosition.objects.filter(startup=startup_form).delete()
     for i in range(1,4):
-        recruit_form = Recruit(post_id=post_form)
+        position_form = StartupPosition(startup=startup_form)
         try:
-            recruit_form.is_recruiting = request.POST['is_recruiting'+str(i)]
-            if recruit_form.is_recruiting == "":
+            position_form.is_recruiting = request.POST['is_recruiting'+str(i)]
+            if position_form.is_recruiting == "":
                 continue
         except:
             print("problem1")
         try:
-            recruit_form.recruit_ending = request.POST['recruit_ending'+str(i)]
+            position_form.recruit_ending = request.POST['recruit_ending'+str(i)]
         except:
             print("problem2")
         try:
-            recruit_form.recruit_position = request.POST['recruit_position'+str(i)]
+            position_form.recruit_position = request.POST['recruit_position'+str(i)]
         except:
             print("problem3")
         try:
-            recruit_form.techstack = request.POST['techstack'+str(i)]
+            position_form.techstack = request.POST['techstack'+str(i)]
         except:
             print("problem4")
         try:
-            recruit_form.career = request.POST['career'+str(i)]
+            position_form.career = request.POST['career'+str(i)]
         except:
             print("problem5")
         try:
-            recruit_form.job_info = request.POST['job_info'+str(i)]
+            position_form.job_info = request.POST['job_info'+str(i)]
         except:
             print("problem6")
         try:
-            recruit_form.qualification = request.POST['qualification'+str(i)]
+            position_form.qualification = request.POST['qualification'+str(i)]
         except:
             print("problem7")
         try:
-            recruit_form.preference = request.POST['preference'+str(i)]
+            position_form.preference = request.POST['preference'+str(i)]
         except:
             print("problem8")
-        recruit_form.save()
+        position_form.save()
     
     return redirect('/groupby')  
 
 
 def startup_upload_delete(request, startup_id):
-    startup = get_object_or_404(Post, pk=startup_id)
+    startup = get_object_or_404(Startup, pk=startup_id)
     startup.delete()
     return redirect('/groupby')

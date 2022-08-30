@@ -5,8 +5,8 @@
     <ul>
     {% for startup in startup_list %}
         <li>
-            <img src="/groupby{{ startup.thumbnail_image.url }}" width="50">
-            <a href="{% url 'groupby:detail' startup.id %}">{{ startup.startup_name }}</a>
+            <img src="/groupby{{ startup.thumbnail.url }}" width="50">
+            <a href="{% url 'groupby:detail' startup.id %}">{{ startup.name }}</a>
         </li>
     {% endfor %}
     </ul>
