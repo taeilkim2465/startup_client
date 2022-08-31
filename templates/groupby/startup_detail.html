@@ -47,6 +47,14 @@
     {% endautoescape %}
     <br>
     <br>
+    <strong>채용설명회 링크</strong>
+    <br>
+    {% for pt in pt_list %}
+        {{ pt.url }}
+        <br>
+    {% endfor %}
+    <br>
+    <br>
     <div>
         <strong>스타트업 이미지</strong>
         <br>
@@ -81,7 +89,9 @@
             <br>
             <strong>소개</strong>
             <br>
-            {{ member.intro }}
+            {% autoescape off %}
+                {{ member.intro }}
+            {% endautoescape %}
             <br>
             <br>
             <br>
@@ -123,17 +133,23 @@
             <br>
             <strong>주요업무</strong>
             <br>
-            {{ position.task }}
+            {% autoescape off %}
+                {{ position.task }}
+            {% endautoescape %}
             <br>
             <br>
             <strong>자격요건</strong>
             <br>
-            {{ position.qualification }}
+            {% autoescape off %}
+                {{ position.qualification }}
+            {% endautoescape %}
             <br>
             <br>
             <strong>우대사항</strong>
             <br>
-            {{ position.preferred }}
+            {% autoescape off %}
+                {{ position.preferred }}
+            {% endautoescape %}
             <br>
             <br>
             <br>

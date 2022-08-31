@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Position, CareerType, TechStack, Startup, StartupPosition, StartupImage, StartupTag, StartupMember 
+from .models import Position, CareerType, TechStack, Startup, StartupPosition, StartupImage, StartupTag, StartupMember, StartupPt
 
 # Register your models here.
 class StartupAdmin(admin.ModelAdmin):
@@ -17,6 +17,9 @@ class StartupTagAdmin(admin.ModelAdmin):
 class StartupMemberAdmin(admin.ModelAdmin):
     search_fields = ['name']
 
+class StartupPtAdmin(admin.ModelAdmin):
+    search_fields = ['name']
+
 class PositionAdmin(admin.ModelAdmin):
     search_fields = ['name']
 
@@ -32,6 +35,7 @@ admin.site.register(StartupPosition, StartupPositionAdmin)
 admin.site.register(StartupImage, StartupImageAdmin)
 admin.site.register(StartupMember, StartupMemberAdmin)
 admin.site.register(StartupTag, StartupTagAdmin)
+admin.site.register(StartupPt, StartupPtAdmin)
 admin.site.register(Position, PositionAdmin)
 admin.site.register(CareerType, CareerTypeAdmin)
 admin.site.register(TechStack, TechStackAdmin)

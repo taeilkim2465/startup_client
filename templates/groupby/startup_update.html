@@ -1,52 +1,39 @@
 <script type="text/javascript">
     var oTbl;
-    var counterTag = 0;
     var counterMember = 0;
     var counterPosition = 0;
-    function insTag() {
-      ++counterTag;
-      oTbl = document.getElementById("addTag");
-      var oRow = oTbl.insertRow();
-      oRow.onmouseover=function(){oTbl.clickedRowIndex=this.rowIndex}; //clickedRowIndex - 클릭한 Row의 위치를 확인;
-      var oCell = oRow.insertCell();
-    
-      //삽입될 Form Tag
-      var frmTag = "<input type=text name=tag_name" + counterTag + " style='width:350px; height:20px; margin-bottom:10px;'> ";
-      frmTag += "<input type=button value='삭제' onClick='removeRow()' style='cursor:hand'>";
-      oCell.innerHTML = frmTag;
-    }
 
-    function defualtMember(){
+    function defaultMember() {
         ++counterMember;
         oTbl = document.getElementById("addMember");
         var oRow = oTbl.insertRow();
-        oRow.onmouseover=function(){oTbl.clickedRowIndex=this.rowIndex}; //clickedRowIndex - 클릭한 Row의 위치를 확인;
+        // oRow.onmouseover=function(){oTbl.clickedRowIndex=this.rowIndex}; //clickedRowIndex - 클릭한 Row의 위치를 확인;
         var oCell = oRow.insertCell();
-
+        
+        //삽입될 Form Tag
         var frmMember = '\
             {% for member in member_list %}\
-            <div>\
-                <strong>이름</strong>\
-                <br>\
-                <input type="text" name="member_name'+ counterMember +'" value="{{ member.name }}"> <br>\
-                <br>\
-                <strong>역할</strong>\
-                <br>\
-                <input type="text" name="member_role'+ counterMember +'" value="{{ member.role }}"> <br>\
-                <br>\
-                <strong>이력</strong>\
-                <br>\
-                <input type="text" name="member_career'+ counterMember +'" value="{{ member.career }}"> <br>\
-                <br>\
-                <strong>소개</strong>\
-                <br>\
-                <textarea name="member_intro'+ counterMember +'" rows="3">{{ member.intro }}</textarea><br>\
-            </div>\
-            <input type=button value="삭제" onClick="removeRow()"" style="cursor:hand"> <br> <br> <br>\
+                <div>\
+                    <strong>이름</strong>\
+                    <br>\
+                    <input type="text" name="member_name'+ counterMember +'" value={{ member.name }}> <br>\
+                    <br>\
+                    <strong>역할</strong>\
+                    <br>\
+                    <input type="text" name="member_role'+ counterMember +'" value={{ member.role }}> <br>\
+                    <br>\
+                    <strong>이력</strong>\
+                    <br>\
+                    <input type="text" name="member_career'+ counterMember +'" value={{ member.career }}> <br>\
+                    <br>\
+                    <strong>소개</strong>\
+                    <br>\
+                    <textarea name="member_intro'+ counterMember +'" style="width:600px;" rows="20">{{ member.intro }}</textarea><br>\
+                </div>\
+                <input type=button value="삭제" onClick="removeRow()"" style="cursor:hand"> <br> <br> <br>\
             {% endfor %}\
-            ';
+        '
         oCell.innerHTML = frmMember;
-        print('default')
     }
 
     function insMember() {
@@ -73,7 +60,7 @@
                 <br>\
                 <strong>소개</strong>\
                 <br>\
-                <textarea name="member_intro'+ counterMember +'" rows="3"></textarea><br>\
+                <textarea name="member_intro'+ counterMember +'" style="width:600px;" rows="20"></textarea><br>\
             </div>\
         ';
       frmMember += "<input type=button value='삭제' onClick='removeRow()' style='cursor:hand'> <br> <br> <br>";
@@ -114,7 +101,7 @@
         <div>\
             <strong>테크스택 선택</strong>\
             <br>\
-            <select name="position_techstacks'+ counterPosition +'" multiple>\
+            <select name="position_techstacks'+ counterPosition +'" style="height:300px;" multiple>\
                 {% for techstack in techstack_list %}\
                     <option value="{{techstack.id}}">"{{techstack.name}}"</option>\
                 {% endfor %}\
@@ -134,19 +121,19 @@
         <div>\
             <strong>주요업무</strong>\
             <br>\
-            <textarea name="position_task'+ counterPosition +'" rows="3"></textarea><br>\
+            <textarea name="position_task'+ counterPosition +'" style="width:600px;" rows="20"></textarea><br>\
         </div>\
         <br>\
         <div>\
             <strong>자격요건</strong>\
             <br>\
-            <textarea name="position_qualification'+ counterPosition +'" rows="3"></textarea><br>\
+            <textarea name="position_qualification'+ counterPosition +'" style="width:600px;" rows="20"></textarea><br>\
         </div>\
         <br>\
         <div>\
             <strong>우대사항</strong>\
             <br>\
-            <textarea name="position_preferred'+ counterPosition +'" rows="3"></textarea><br>\
+            <textarea name="position_preferred'+ counterPosition +'" style="width:600px;" rows="20"></textarea><br>\
         </div>\
       ';
       frmPosition += "<input type=button value='삭제' onClick='removeRow()' style='cursor:hand'> <br> <br> <br>";
@@ -179,72 +166,72 @@
 </script>
 
 <form action="/groupby/startup/upload/update/create/" method="post", enctype="multipart/form-data">
-    <input type="hidden" name="_method" value="put" />
     {% csrf_token %}
     <div class = "startup_info">
         <h2>스타트업 정보</h2>
         <div>
             <strong>스타트업 이름</strong>
             <br>
-            <input type="text" name="name"> <br>
+            <input type="text" name="name" value="{{ startup.name}}"> <br>
         </div>
         <br>
         <div>
             <strong>썸네일 이미지</strong>
             <br>
-            <input type="file" name="thumbnail"><br>
+            <img src="/groupby{{ startup.thumbnail.url }}" width="200"><br>
         </div>
         <br>
         <div>
             <strong>한줄 소개</strong>
             <br>
-            <input type="text" name="brief_intro"> <br>
+            <input type="text" name="brief_intro" value="{{ startup.briefIntro }}"> <br>
         </div>
         <br>
         <div>
             <strong>숏폼 영상 링크</strong>
             <br>
-            <input type="text" name="pitch"> <br>
+            <input type="text" name="pitch" value="{{ startup.pitch }}"> <br>
         </div>
         <br>
         <div>
             <strong>태그</strong>
             <br>
-            <input name="addButton" type="button" style="cursor:hand; margin-bottom:10px;" onClick="insTag()" value="추가">
-            <font color="#FF0000">*</font>추가버튼을 클릭해 보세요.
-            <script>defualtMember()</script>
-            <table id="addTag" width="400" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" border="0">
-            </table>
+            <input type="text" name="tag" style="width:600px" value="{% for tag in tag_list%}#{{ tag.name }} {% endfor %}"> <br>
         </div>
         <br>
         <div>
             <strong>기업소개</strong>
             <br>
-            <textarea name="intro" rows="5"></textarea><br>
+            <textarea name="intro" style="width:600px;" rows="20">{{ startup.intro }}</textarea><br>
         </div>
         <br>
         <div>
             <strong>조직문화</strong>
             <br>
-            <textarea name="culture" rows="5"></textarea><br>
+            <textarea name="culture" style="width:600px;" rows="20">{{ startup.culture }}</textarea><br>
         </div>
         <br>
         <div>
             <strong>복지 및 혜택</strong>
             <br>
-            <textarea name="benefit" rows="5"></textarea><br>
+            <textarea name="benefit" style="width:600px;" rows="20">{{ startup.benefit }}</textarea><br>
         </div>
         <br>
         <div>
             <strong>채용설명회 링크</strong>
             <br>
-            <input type="text" name="pt_url"> <br>
+            <input type="text" name="pt_url" value="{% for pt in pt_list%}{{ pt.url }}{%endfor%}"> <br>
         </div>
         <br>
         <div>
             <strong>스타트업 이미지</strong> (다중 선택)
             <br>
-            <input type="file" name="image_url" multiple><br>
+            <br>
+            {% for image in image_list %}
+                <img src="/groupby{{ image.url.url }}" width="200">
+                <br>
+                <br>
+            {% endfor %}
         </div>
     </div>
     <br>
@@ -253,7 +240,8 @@
     <h2>스타트업 직원 정보</h2>
     <div class="employee">
         <input name="addButton" type="button" style="cursor:hand; margin-bottom:10px;" onClick="insMember()" value="추가">
-        <font color="#FF0000">*</font>추가버튼을 클릭해 보세요.<br>
+        <font color="#FF0000">*</font>추가버튼을 클릭해 보세요.
+        <script>defaultMember()</script>
         <table id="addMember" width="400" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" border="0">
         </table>
     </div>
